@@ -1,13 +1,14 @@
 <div fxLayout="row">
-  <form [formGroup]="dateForm">
-    <mat-form-field fxFlex>
+  <form [formGroup]="dateForm" (ngSubmit)="onSubmit()">
+    <mat-form-field fxFlex="80%">
       <input matInput formControlName="birthDate" [matDatepicker]="picker" name="birthDate" placeholder="Birth Date">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
-    <mat-form-field fxFlex="20">
+    <mat-form-field fxFlex="20%">
       <input matInput formControlName="time" type="time" id="time" name="time">
     </mat-form-field>
+    <button mat-raised-button color="primary" type="submit">Save</button>
   </form>
 </div>
 <br>
