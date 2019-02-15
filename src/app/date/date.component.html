@@ -1,0 +1,15 @@
+<div fxLayout="row">
+  <form [formGroup]="dateForm">
+    <mat-form-field fxFlex>
+      <input matInput formControlName="birthDate" [matDatepicker]="picker" name="birthDate" placeholder="Birth Date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field fxFlex="20">
+      <input matInput formControlName="time" type="time" id="time" name="time">
+    </mat-form-field>
+  </form>
+</div>
+<br>
+<!-- <span *ngIf="birthDate.valueOf">{{birthDate | date:'yyyy-MM-dd'}}</span> -->
+<br>
