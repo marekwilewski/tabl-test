@@ -1,0 +1,216 @@
+<!-- <div fxFill fxLayout="column">
+  <div fxLayout="row">
+    <div fxFlex></div>
+    <div class="dms-form">
+      <div fxLayout="row" fxLayoutAlign="start center" style="margin-bottom: 16px">
+        przycisk: wstecz
+        <a md-icon-button (click)="navBack()" class="nav-back-icon">
+          <i aria-hidden="true" class="fa fa-arrow-left"></i>
+        </a>
+        <h2 *ngIf="formMode==='view'" class="mat-title dms-form-title">
+          Szczegóły incydentu
+        </h2>
+        <h2 *ngIf="formMode==='edit'" class="mat-title dms-form-title">
+          Edycja incydentu
+        </h2>
+        <h2 *ngIf="formMode==='new'" class="mat-title dms-form-title">
+          Nowy incydent
+        </h2>
+      </div>
+
+      <form [formGroup]="form">
+        <mat-form-field>
+          <textarea formControlName="description" matInput #description
+            placeholder="Opis incydentu" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1" required></textarea>
+            <mat-hint align="end">{{description.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="declarant" matInput #declarant
+            placeholder="Zgłaszający" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1" required></textarea>
+            <mat-hint align="end">{{declarant.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <div fxLayout="row" fxLayoutGap="25px">
+          <mat-form-field fxFlex="50%">
+              <input matInput [matDatepicker]="dpIncidentDate" placeholder="Data wystąpienia incydentu"
+                  formControlName="incidentDate" required [max]="incidentDateMax" (dateChange)="incidentDateChange()">
+              <mat-datepicker-toggle matSuffix [for]="dpIncidentDate"></mat-datepicker-toggle>
+              <mat-datepicker #dpIncidentDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="50%">
+              <input matInput [matDatepicker]="dpNotificationDate" placeholder="Data zgłoszenia incydentu"
+                  formControlName="notificationDate" required  [min]="notificationDateMin"  [max]="incidentDateMax">
+              <mat-datepicker-toggle matSuffix [for]="dpNotificationDate"></mat-datepicker-toggle>
+              <mat-datepicker #dpNotificationDate></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field>
+          <mat-select class="dms-form-field" formControlName="statusId"
+            placeholder="Status" required>
+            <mat-option *ngFor="let status of incidentStatuses"
+              [value]="status.id">{{ status.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="systemName" matInput #systemName
+            placeholder="Nazwa systemu lub aplikacji" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{systemName.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="place" matInput #place
+            placeholder="Miejsce wystąpienia incydentu" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{place.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="culprit" matInput #culprit
+            placeholder="Sprawca incydentu" maxlength="1000"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{culprit.value?.length || 0}}/1000</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="dataSteward" matInput #dataSteward
+            placeholder="Osoba odpowiedzialna za dane" maxlength="1000"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{dataSteward.value?.length || 0}}/1000</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="circumstances" matInput #circumstances
+            placeholder="Okoliczności wystąpienia incydentu" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{circumstances.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="nature" matInput #nature
+            placeholder="Charakter incydentu" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{nature.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="technicalDescription" matInput #technicalDescription
+            placeholder="Techniczny opis incydentu" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{technicalDescription.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select class="dms-form-field" formControlName="peopleCategoryIds"
+            placeholder="Kategoria osób zagrożonych incydentem" multiple>
+            <mat-option *ngFor="let peopleCategory of peopleCategories"
+              [value]="peopleCategory.id">{{ peopleCategory.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div fxLayout="row" fxLayoutGap="25px">
+          <mat-form-field fxFlex="50%">
+            <input formControlName="peopleCount" #peopleCount matInput placeholder="Szacowana liczba osób" OnlyNumber="true" />
+            <mat-error *ngIf="form.get('peopleCount').hasError('pattern') || form.get('peopleCount').hasError('min') ">Wprowadź wartość liczbową większą od 0</mat-error>
+            <mat-error *ngIf="form.get('peopleCount').hasError('max')">Przekroczenie dopuszczalnej wartości {{integerMaxValue}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="50%">
+            <input formControlName="entriesCount" matInput placeholder="Szacowana liczba wpisów" OnlyNumber="true" />
+            <mat-error *ngIf="form.get('entriesCount').hasError('pattern') || form.get('entriesCount').hasError('min')">Wprowadź wartość liczbową większą od 0</mat-error>
+            <mat-error *ngIf="form.get('entriesCount').hasError('max')">Przekroczenie dopuszczalnej wartości {{integerMaxValue}}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field>
+          <textarea formControlName="possibleConsequences" matInput #possibleConsequences
+            placeholder="Możliwe konsekwencje" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{possibleConsequences.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="appliedSecurityMeasures" matInput #appliedSecurityMeasures
+            placeholder="Zastosowane środki bezpieczeństwa" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{appliedSecurityMeasures.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="proposedSecurityMeasures" matInput #proposedSecurityMeasures
+            placeholder="Proponowane środki bezpieczeństwa" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{proposedSecurityMeasures.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="evidences" matInput #evidences
+            placeholder="Zabezpieczone materiały lub inne dowody" maxlength="1000"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{evidences.value?.length || 0}}/1000</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="actions" matInput #actions
+            placeholder="Realizowane akcje" maxlength="1000"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{actions.value?.length || 0}}/1000</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="notifications" matInput #notifications
+            placeholder="Zawiadomienia" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{notifications.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="notes" matInput #notes
+            placeholder="Notatki" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{notes.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <textarea formControlName="attachments" matInput #attachments
+            placeholder="Załączniki" maxlength="4096"
+            matTextareaAutosize matAutosizeMinRows="1"></textarea>
+            <mat-hint align="end">{{attachments.value?.length || 0}}/4096</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-select class="dms-form-field" formControlName="personalDatasetIds"
+            placeholder="Zbiory danych osobowych" multiple>
+            <mat-option *ngFor="let personalDataset of personalDatasets"
+              [value]="personalDataset.id">{{ personalDataset.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-error *ngIf="form.hasError('dateLessThan')">
+            Data zgłoszenia nie może być wcześniejsza od daty wystąpienia
+        </mat-error>
+
+        <div *ngIf="formMode==='edit'||formMode==='new'"
+          fxLayout="row" fxLayoutAlign="space-between" class="dms-form-btns">
+          <button mat-raised-button color="primary" (click)="navBack()">Anuluj</button>
+          <button *ngIf="formMode==='new'" mat-raised-button color="warn"
+            [disabled]="!form.valid || !form.touched"
+            (click)="saveIncident()">Utwórz</button>
+          <button *ngIf="formMode==='edit'" mat-raised-button color="warn"
+            [disabled]="!form.valid || form.pristine"
+            (click)="saveIncident()">Zapisz</button>
+        </div>
+      </form>
+    </div>
+    <div fxFlex></div>
+  </div>
+</div> -->
